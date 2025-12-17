@@ -1,0 +1,168 @@
+.signup-container {
+    background: url('/home/coder/project/workspace/reactapp/public/SIGNUP.jpg') no-repeat center center; 
+    background-size: cover;
+    background-position: center;
+    background: no-repeat;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.signup-box {
+    background-color: #fff !important; 
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); 
+    padding: 0px 50px !important; 
+    width: 1000% !important;
+    max-width: 500px !important; 
+    height: auto !important; 
+    overflow: hidden !important;
+}
+
+.text-brown {
+    color: #8b4513;
+}
+
+
+.btn-submit {
+    background-color: #8b4513; 
+    color: #fff; 
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 1rem; 
+    font-weight: bold; 
+    border-radius: 5px;
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    box-shadow: 0px 4px 6px #6b3a10; 
+}
+
+.btn-submit:hover {
+    background-color: #a0522d; 
+    transform: translateY(-2px); 
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
+}
+
+.btn-submit:active {
+    background-color: #6b3a10; 
+    transform: translateY(2px);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+form label {
+    font-weight: bold;
+    color: #8b4513; 
+    margin-bottom: 5px; 
+    display: block;
+    text-align: left; 
+}
+
+form input, form select {
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #fdfdfd; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%; 
+    margin-bottom: 20px; 
+}
+
+form input:focus, form select:focus {
+    border-color: #8b4513 !important; 
+    box-shadow: 0 0 5px rgba(139, 69, 19, 0.5) !important;
+    outline: none;
+}
+
+.text-danger {
+    font-size: 0.9rem;
+    margin-top: -10px; 
+    margin-bottom: 10px;
+}
+
+form input::placeholder {
+    color: #aaa; 
+    font-style: italic;
+}
+
+form select {
+    appearance: none; 
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%238b4513' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+form input, form select {
+    margin-bottom: 15px;
+}
+
+p.text-center a {
+    color: #8b4513;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+p.text-center a:hover {
+    text-decoration: underline;
+}
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background-color: #8b4513;
+    color: #fff;
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.modal-body {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+
+@media (max-width: 768px) {
+    .signup-box {
+        padding: 20px;
+    }
+
+    .btn-brown {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+}
+.signup-box .form-group label {
+    display: block;
+    text-align: left; 
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.signup-box .form-group input,
+.signup-box .form-group select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.signup-box h3 {
+    text-align: center;
+    color: #8b4513;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.text-bold {
+    font-weight: bold; 
+}
+
+.font-bold {
+    font-weight: bold; 
+}

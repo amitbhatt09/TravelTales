@@ -1,0 +1,145 @@
+.table-container {
+    background: linear-gradient(to bottom right, #f9f9fc, #ffffff);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 98%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+.bColor
+{
+    background-color: rgb(230, 225, 225);
+}
+.table {
+    margin-bottom: 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    font-size: 1.1rem;
+}
+.table th {
+    background-color: #8a3d1f;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.table td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 20px;
+    word-wrap: break-word;
+}
+.table img {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+ 
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between buttons */
+}
+
+.btn-edit {
+    background-color: #007bff; /* Blue primary button */
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05);
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Danger button */
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-delete:hover {
+    background-color: #b02a37; /* Darker red on hover */
+    transform: scale(1.05);
+}
+ 
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #8a3d1f; /* Brown border */
+}
+
+.modal-header {
+    background-color: #8a3d1f; /* Brown background */
+    color: white;
+    border-bottom: none;
+    text-align: center;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.modal-footer {
+    border-top: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-footer .btn-danger {
+    background-color: #8a3d1f; /* Brown button */
+    border: none;
+    font-weight: bold;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-footer .btn-danger:hover {
+    background-color: #a0522d; /* Slightly lighter brown on hover */
+    transform: scale(1.05);
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6c757d; /* Gray button */
+    border: none;
+    font-weight: bold;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #5a6268; /* Slightly darker gray on hover */
+    transform: scale(1.05);
+}
+h2.text-center {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #4a4a4a;
+    font-size: 2.5rem;
+    text-align: center;
+}
+ 
