@@ -3,7 +3,7 @@ body .login {
    display: flex;
    justify-content: center;
    align-items: center;
-   background-image: url('/home/coder/project/workspace/reactapp/public/BG.jpg') !important; 
+   background-image: url('../assets/BG.jpg') !important; 
    background-position: center;
    background-size: cover;
    background-repeat: no-repeat;

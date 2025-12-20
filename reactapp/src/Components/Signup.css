@@ -1,5 +1,5 @@
 .signup-container {
-    background: url('/home/coder/project/workspace/reactapp/public/SIGNUP.jpg') no-repeat center center; 
+    background: url('../assets/SIGNUP.jpg') no-repeat center center; 
     background-size: cover;
     background-position: center;
     background: no-repeat;
