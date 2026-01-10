@@ -65,7 +65,7 @@ const Signup = () => {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                const response = await axios.post(`${API_BASE_URL}/register`, {
+                const response = await axios.post(`${API_BASE_URL}/api/register`, {
                     username,
                     email,
                     mobileNumber,

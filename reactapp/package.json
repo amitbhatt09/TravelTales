@@ -11,7 +11,6 @@
     "axios": "^1.5.1",
     "axios-mock-adapter": "^1.22.0",
     "bootstrap": "^5.3.5",
-    "canvas": "^2.11.2",
     "force": "0.0.3",
     "formik": "^2.4.5",
     "jest": "^29.7.0",

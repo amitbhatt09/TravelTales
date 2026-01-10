@@ -43,7 +43,7 @@ const Login = () => {
         e.preventDefault();
         if (validate()) {
             try {
-                const response = await axios.post(`${baseUrl}/login`, formData);
+                const response = await axios.post(`${baseUrl}/api/login`, formData);
                 const token = response.data.Token;
                 console.log('Token:', token);
 
