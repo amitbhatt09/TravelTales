@@ -1,14 +1,16 @@
 .signup-container {
-    background: url('../assets/SIGNUP.jpg') no-repeat center center; 
-    background-size: cover;
+    background-image: url("/SIGNUP.jpg");
+    background-repeat: no-repeat;
     background-position: center;
-    background: no-repeat;
-    height: auto;
+    background-size: cover;
+    min-height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
 }
+
 .signup-box {
     background-color: #fff !important; 
     border: 1px solid #d3d3d3;

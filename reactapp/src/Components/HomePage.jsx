@@ -26,7 +26,7 @@ const HomePage = () => {
       </div>
 
       <footer className="footer">
-        <p>Email: example@travelcorp.com</p>
+        <p>Email: TravelTales.com</p>
       </footer>
     </div>
   );
