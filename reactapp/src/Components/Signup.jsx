@@ -4,6 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import API_BASE_URL from '../apiConfig';
 import './Signup.css';
+import signupBg from "../assets/SIGNUP.jpg";
 
 const Signup = () => {
     const [username, setUsername] = useState('');
@@ -90,7 +91,8 @@ const Signup = () => {
     };
 
     return (
-        <div className="container-fluid signup-container">
+        <div className="container-fluid signup-container" style={{ backgroundImage: `url(${signupBg})` }}
+>
             <div className="row justify-content-center">
                 <div className="col-md-6 signup-box shadow-lg p-4 rounded">
                     <h3 className="text-center text-brown mb-4">Signup</h3>
