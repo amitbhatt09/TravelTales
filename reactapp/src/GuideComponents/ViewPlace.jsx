@@ -21,7 +21,7 @@ const ViewPlace = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${baseUrl}/Place`, {
+        const response = await axios.get(`${baseUrl}/api/Place`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,7 +63,7 @@ const ViewPlace = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${baseUrl}/Place/${selectedID}`, {
+      await axios.delete(`${baseUrl}/api/Place/${selectedID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

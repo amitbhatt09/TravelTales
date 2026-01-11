@@ -30,7 +30,7 @@ const PlaceForm = ({ mode }) => {
       if (mode === 'edit' && id) {
         setLoading(true);
         try {
-          const response = await axios.get(`${baseUrl}/Place/${id}`, {
+          const response = await axios.get(`${baseUrl}/api/Place/${id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -94,7 +94,7 @@ const PlaceForm = ({ mode }) => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       if (mode === 'edit') {
-        const currentResponse =await axios.get(`${baseUrl}/Place/${id}`, { headers });
+        const currentResponse =await axios.get(`${baseUrl}/api/Place/${id}`, { headers });
 
         const currentCategory=currentResponse.data.Category;
         
@@ -103,10 +103,10 @@ const PlaceForm = ({ mode }) => {
           setLoading(false);
           return;
         } 
-        await axios.put(`${baseUrl}/Place/${id}`, formData, { headers });
+        await axios.put(`${baseUrl}/api/Place/${id}`, formData, { headers });
         
       } else {
-        await axios.post(`${baseUrl}/Place`, formData, { headers });
+        await axios.post(`${baseUrl}/api/Place`, formData, { headers });
       }
       setLoading(false);
       setShowPopup(true);
