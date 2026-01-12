@@ -12,16 +12,7 @@
     border-radius: 0; 
     overflow: hidden; 
 }
-<<<<<<< HEAD
-=======
 
-
-<<<<<<< HEAD
->>>>>>> 64c76fd6cbc8eb768d0eca915cb896f7b8f2407d
- 
->>>>>>> f0dedb1eaf90f1cd1b394a05fa4d76958116c431
-=======
->>>>>>> b4ea467361508c98acc2d92bec6e85eeadfe2442
 .navbar-brand {
  
     color: #ffffff;
@@ -169,3 +160,181 @@ transform: scale(1.1);
         background-color: #C0C0C0;
         transform: scale(1.05);
         }
+        /* ===== LOGOUT MODAL STYLING ===== */
+
+.logout-modal .modal-dialog {
+    max-width: 450px;
+}
+
+.logout-modal .modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.logout-modal .modal-header {
+    background-color: #8a3d1f;
+    color: white;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+}
+
+.logout-modal .modal-title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.logout-modal .modal-body {
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 25px;
+}
+
+.logout-modal .modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 25px;
+}
+
+.logout-modal .modal-footer button {
+    min-width: 140px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+/* Equal width buttons for logout modal */
+/* Brand */
+.navbar-brand {
+    color: #ffffff;
+    font-weight: 700;
+    font-family: "Noto Serif", serif;
+    font-size: 2.3rem;
+    letter-spacing: 3px;
+    cursor: default;
+    user-select: none;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Remove hover effect from brand */
+.navbar-brand:hover {
+    color: #ffffff !important;
+}
+
+/* Place Dropdown */
+.place-dropdown {
+    background: rgba(255, 244, 230, 0.95);
+    color: #5a3b1e !important;
+    border-radius: 8px;
+    border: none;
+    padding: 6px 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.place-dropdown:hover {
+    background: #ffe6c7;
+}
+
+/* Username display */
+.user-label {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: default;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+.navbar {
+    padding: 22px 50px;   /* was 15px 40px */
+}
+/* ===== LOGOUT MODAL STYLING ===== */
+
+.logout-modal .modal-dialog {
+    max-width: 450px;
+}
+
+.logout-modal .modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.logout-modal .modal-header {
+    background-color: #8a3d1f;
+    color: white;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+}
+
+.logout-modal .modal-title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.logout-modal .modal-body {
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 25px;
+}
+
+.logout-modal .modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 25px;
+}
+
+.logout-modal .modal-footer button {
+    min-width: 140px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+/* Equal width buttons for logout modal */
+/* ===== Perfectly Balanced Logout Buttons ===== */
+.logout-modal .modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.logout-modal .modal-footer .btn {
+    width: 180px;                /* equal width */
+    height: 48px;                /* equal height */
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Yes, Logout button */
+.logout-modal .modal-footer .btn-success {
+    background-color: #8a3d1f;
+    border: none;
+    color: white;
+}
+
+.logout-modal .modal-footer .btn-success:hover {
+    background-color: #a0522d;
+    transform: translateY(-1px);
+}
+
+/* Cancel button */
+.logout-modal .modal-footer .btn-danger {
+    background-color: #8a3d1f;
+    border: none;
+    color: white;
+}
+
+.logout-modal .modal-footer .btn-danger:hover {
+    background-color: #a0522d;
+    transform: translateY(-1px);
+}
+
+
+

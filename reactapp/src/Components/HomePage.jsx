@@ -14,20 +14,27 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
+
       {role === "Traveller"
-        ? <TravellerNavbar username={username} role={role} />
-        : <GuideNavbar username={username} role={role} />
+        ? <TravellerNavbar username={username} role={role} hideHome />
+        : <GuideNavbar username={username} role={role} hideHome />
       }
 
-      <div>
-        <p className="wel">
-          Welcome to Travel Tales, your gateway to exploring amazing travel destinations around the world.
+      <div className="welcome-box">
+        <p>
+          Welcome to <span>Travel Tales</span>, your gateway to exploring amazing
+          travel destinations around the world.
         </p>
       </div>
 
       <footer className="footer">
-        <p>Email: TravelTales.com</p>
+        <div className="footer-center">
+          <h4>Contact Us</h4>
+          <p>📧 <span className="email">TravelTales@gmail.com</span></p>
+          <p>📞 +91 98765 43210</p>
+        </div>
       </footer>
+
     </div>
   );
 };

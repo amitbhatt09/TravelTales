@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import './GuideNavbar.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 
 const GuideNavbar = ({ username, role }) => {
     const [showLogoutModel, setShowLogoutModel] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();   // ✅ MUST be inside component
 
     const handleLogoutClick = () => {
         localStorage.removeItem('token');
@@ -27,42 +27,56 @@ const GuideNavbar = ({ username, role }) => {
     const handleCancel = () => {
         setShowLogoutModel(false);
     };
-    console.log("user:",username);
-    console.log("role:",role);
 
     return (
         <div className="nav-page">
             <nav className="navbar navbar-expand-lg custom-navbar">
                 <div className="container-fluid">
-                    <Link className="navbar-brand"><i class="bi bi-suitcase2-fill"></i> TRAVEL TALES</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+                    {/* Brand */}
+                    <div
+                        className="navbar-brand"
+                        onClick={() => {
+                            if (location.pathname === "/home") {
+                                window.location.reload(); // refresh if already home
+                            } else {
+                                navigate("/home");       // go to home
+                            }
+                        }}
+                    >
+                        <i className="bi bi-suitcase2-fill me-2"></i>
+                        TRAVEL TALES
+                    </div>
+
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
                     <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/home">
-                                    <i className="fas fa-home me-2"></i>Home
-                                </Link>
-                            </li>
-                            <li className="nav-item dropdown">
+                        <ul className="navbar-nav ms-auto align-items-center">
+
+                            <li className="nav-item dropdown me-3">
                                 <select
-                                    className="form-select"
+                                    className="form-select place-dropdown"
+                                    defaultValue=""
                                     onChange={(e) => {
                                         if (e.target.value) {
                                             navigate(`/${e.target.value}`);
                                         }
                                     }}
                                 >
-                                    <option value="">Place</option>
+                                    <option value="" disabled hidden>Place</option>
                                     <option value="placeform">Add Place</option>
-                                    <option value="viewplace">View Place</option>
+                                    <option value="viewplace">View Places</option>
                                 </select>
                             </li>
-                            <li className="nav-item">
-                                <p className="nav-link" to="/profile">{username}/{role}</p>
+
+                            <li className="nav-item me-3">
+                                <span className="user-label">
+                                    {username} / {role}
+                                </span>
                             </li>
+
                             <li className="nav-item">
                                 <button className="btn light-brown-btn" onClick={handleLogoutClick}>
                                     <i className="fas fa-sign-out-alt me-2"></i>Logout
@@ -72,16 +86,27 @@ const GuideNavbar = ({ username, role }) => {
                     </div>
                 </div>
             </nav>
-            <Modal show={showLogoutModel} onHide={handleCloseModel}>
+
+            <Modal
+                show={showLogoutModel}
+                onHide={handleCloseModel}
+                centered
+                dialogClassName="logout-modal"
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>Confirmation</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>Are you sure you want to logout?</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={handleLogout}>Yes, Logout</Button>
-                    <Button variant="danger" onClick={handleCancel}>Cancel</Button>
+                    <Button variant="success" onClick={handleLogout}>
+                        Yes, Logout
+                    </Button>
+                    <Button variant="danger" onClick={handleCancel}>
+                        Cancel
+                    </Button>
                 </Modal.Footer>
             </Modal>
+
         </div>
     );
 };

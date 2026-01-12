@@ -85,51 +85,66 @@ const PlaceForm = ({ mode }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    setLoading(true);
-    try {
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-      if (mode === 'edit') {
-        const currentResponse =await axios.get(`${baseUrl}/api/Place/${id}`, { headers });
+  setLoading(true);
+  setFormError('');
 
-        const currentCategory=currentResponse.data.Category;
-        
-        if(formData.Category === currentCategory){
-          setFormError('Please choose a different category');
-          setLoading(false);
-          return;
-        } 
-        await axios.put(`${baseUrl}/api/Place/${id}`, formData, { headers });
-        
-      } else {
-        await axios.post(`${baseUrl}/api/Place`, formData, { headers });
+  try {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    // ---------- ADD MODE VALIDATION ----------
+    if (mode === 'add') {
+      // Get all places
+      const allPlacesResponse = await axios.get(`${baseUrl}/api/Place`, { headers });
+      const allPlaces = allPlacesResponse.data;
+
+      const newName = formData.Name.trim().toLowerCase();
+
+      // Check for partial name match
+      const duplicate = allPlaces.find(place => {
+        const existingName = place.Name.trim().toLowerCase();
+        return (
+          existingName.includes(newName) ||
+          newName.includes(existingName)
+        );
+      });
+
+      if (duplicate) {
+        setFormError(`Place "${duplicate.Name}" already exists.`);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-      setShowPopup(true);
-    } catch (error) {
-      setLoading(false);
-      console.error('Error saving place:', error);
-      if (error.response && error.response.status === 400) {
-          const errorMessage = error.response.data.message || 'Category already exists. Cannot update the place.';
-          setFormError(errorMessage);
-          if (error.response && error.response.status === 400 && mode==="add") {
-            const errorMessage = error.response.data.message || 'Name already exists. Cannot add the place.';
-              setFormError(errorMessage);
-          }
-      } 
-      else if (error.response && error.response.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/');
-      } 
-      else {
-          setFormError('An error occurred while saving the place. Please try again.');
-      }
+    }
+
+    // ---------- SAVE ----------
+    if (mode === 'edit') {
+      // Update without blocking any field
+      await axios.put(`${baseUrl}/api/Place/${id}`, formData, { headers });
+    } else {
+      await axios.post(`${baseUrl}/api/Place`, formData, { headers });
+    }
+
+    setShowPopup(true);
+  } catch (error) {
+    console.error('Error saving place:', error);
+
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      navigate('/');
+    } else if (error.response && error.response.data?.message) {
+      setFormError(error.response.data.message);
+    } else {
+      setFormError('Failed to save place. Please try again.');
+    }
+  } finally {
+    setLoading(false);
   }
 };
+
 
   const handlePopupClose = () => {
     setShowPopup(false);
