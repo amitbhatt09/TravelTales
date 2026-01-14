@@ -78,7 +78,17 @@ const HomePage = () => {
       <footer className="footer">
         <div className="footer-center">
           <h4>Contact Us</h4>
-          <p>📧 <span className="email">TravelTales@gmail.com</span></p>
+          <p>
+  📧{' '}
+  <a
+    href="mailto:TravelTales@gmail.com"
+    className="email"
+    title="Send us an email"
+  >
+    TravelTales@gmail.com
+  </a>
+</p>
+
           <p>📞 +91 98765 43210</p>
         </div>
       </footer>

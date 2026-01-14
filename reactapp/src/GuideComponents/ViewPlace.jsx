@@ -50,7 +50,7 @@ const ViewPlace = () => {
 
   /* 🔹 SEARCH FILTER */
   const filteredPlaces = places.filter((place) => {
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
     return (
       place.Name.toLowerCase().includes(q) ||
       place.Category.toLowerCase().includes(q) ||
