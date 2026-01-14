@@ -70,7 +70,13 @@ const Login = () => {
             <div className='left-side'>
 
                 <h1>Travel Tales</h1>
-                <p>Welcome to Travel Tales, your gateway to exploring stunning travel destinations around the world. Discover curated itineraries and find your perfect gateway, and receive personalized recommendations tailored to your travel style and budget!</p>
+                <p className="typing-text">
+Plan smarter journeys with <strong>Travel Tales</strong> explore destinations,
+compare the best time to visit, and manage your travel plans. Get recommendations,
+curated places, and insights that help you travel better,
+not just farther.
+</p>
+
             </div>
             <div className='right-side'>
                 <h1>Login</h1>

@@ -1,46 +1,163 @@
-/* Brand */
+/* Navbar General */
+.navbar {
+    padding: 20px 80px;
+    min-height: 85px;
+    display: flex;
+    align-items: center;
+}
+
+/* Make navbar full width */
+.custom-navbar {
+    width: 100%;
+    margin: 0;
+    background: linear-gradient(135deg, #b8743d 0%, #d4a574 50%, #c9915d 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.custom-navbar .container-fluid {
+    max-width: 100%;
+    padding: 0 20px;
+}
+
+/* Brand - Enhanced Styling */
 .navbar-brand {
     color: #ffffff;
     font-weight: 700;
-    font-family: "Noto Serif", serif;
-    font-size: 2.3rem;
-    letter-spacing: 3px;
-    cursor: default;
+    font-family: "Playfair Display", "Georgia", serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
     user-select: none;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* Remove hover effect from brand */
-.navbar-brand:hover {
-    color: #ffffff !important;
+/* Clickable Brand Styling */
+.brand-clickable {
+    cursor: pointer;
 }
 
-/* Place Dropdown */
+/* Brand Hover Effect */
+.brand-clickable:hover {
+    color: #ffd7a3 !important;
+    transform: translateY(-2px);
+    text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.7);
+    letter-spacing: 5px;
+}
+
+/* Optional: Add underline animation on hover */
+.brand-clickable::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #ffd7a3, #ffedd5);
+    transition: width 0.4s ease;
+    border-radius: 2px;
+}
+
+.brand-clickable:hover::after {
+    width: 90%;
+}
+
+/* Icon hover effect */
+.brand-clickable:hover .bi-suitcase2-fill {
+    animation: suitcaseBounce 0.6s ease;
+}
+
+@keyframes suitcaseBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Place Dropdown - Enhanced Design */
 .place-dropdown {
-    background: rgba(255, 244, 230, 0.95);
+    background: rgba(255, 255, 255, 0.95);
     color: #5a3b1e !important;
-    border-radius: 8px;
-    border: none;
-    padding: 6px 14px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 18px;
     font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    min-width: 160px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.place-dropdown option {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    background: #fff;
 }
 
 .place-dropdown:hover {
-    background: #ffe6c7;
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.place-dropdown:focus {
+    outline: none;
+    border-color: #ffd7a3;
+    box-shadow: 0 0 0 3px rgba(255, 215, 163, 0.3);
 }
 
 /* Username display */
 .user-label {
     color: #fff;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.05rem;
     cursor: default;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 18px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.navbar {
-    padding: 22px 50px;   /* was 15px 40px */
+
+/* Logout Button Styling */
+.light-brown-btn {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #8a3d1f !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 10px !important;
+    padding: 10px 24px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
+
+.light-brown-btn:hover {
+    background: #ffffff !important;
+    color: #6b2d15 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.light-brown-btn:active {
+    transform: translateY(0) !important;
+}
+
+.light-brown-btn .fas {
+    transition: transform 0.3s ease;
+}
+
+.light-brown-btn:hover .fas {
+    transform: translateX(-3px);
+}
+
 /* ===== LOGOUT MODAL STYLING ===== */
 
 .logout-modal .modal-dialog {
@@ -58,13 +175,21 @@
     text-align: center;
     justify-content: center;
     position: relative;
+    padding: 20px;
+    border-bottom: none;
+}
+
+/* Hide the close button */
+.logout-modal .modal-header .btn-close {
+    display: none;
 }
 
 .logout-modal .modal-title {
     width: 100%;
     text-align: center;
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 .logout-modal .modal-body {
@@ -78,6 +203,7 @@
     justify-content: center;
     gap: 20px;
     padding-bottom: 25px;
+    border-top: none;
 }
 
 .logout-modal .modal-footer button {
@@ -86,99 +212,10 @@
     font-size: 1rem;
     border-radius: 8px;
 }
-/* Equal width buttons for logout modal */
-/* Brand */
-.navbar-brand {
-    color: #ffffff;
-    font-weight: 700;
-    font-family: "Noto Serif", serif;
-    font-size: 2.3rem;
-    letter-spacing: 3px;
-    cursor: default;
-    user-select: none;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
-}
 
-/* Remove hover effect from brand */
-.navbar-brand:hover {
-    color: #ffffff !important;
-}
-
-/* Place Dropdown */
-.place-dropdown {
-    background: rgba(255, 244, 230, 0.95);
-    color: #5a3b1e !important;
-    border-radius: 8px;
-    border: none;
-    padding: 6px 14px;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.place-dropdown:hover {
-    background: #ffe6c7;
-}
-
-/* Username display */
-.user-label {
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: default;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-}
-.navbar {
-    padding: 22px 50px;   /* was 15px 40px */
-}
-/* ===== LOGOUT MODAL STYLING ===== */
-
-.logout-modal .modal-dialog {
-    max-width: 450px;
-}
-
-.logout-modal .modal-content {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.logout-modal .modal-header {
-    background-color: #8a3d1f;
-    color: white;
-    text-align: center;
-    justify-content: center;
-    position: relative;
-}
-
-.logout-modal .modal-title {
-    width: 100%;
-    text-align: center;
-    font-size: 1.6rem;
-    font-weight: 700;
-}
-
-.logout-modal .modal-body {
-    text-align: center;
-    font-size: 1.1rem;
-    padding: 25px;
-}
-
-.logout-modal .modal-footer {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding-bottom: 25px;
-}
-
-.logout-modal .modal-footer button {
-    min-width: 140px;
-    font-weight: 600;
-    font-size: 1rem;
-    border-radius: 8px;
-}
 /* Equal width buttons for logout modal */
 .logout-modal .modal-footer .btn {
-    width: 160px;              /* force same size */
+    width: 160px;
     text-align: center;
     font-weight: 600;
 }
-

@@ -7,7 +7,7 @@ import { Modal, Button } from 'react-bootstrap';
 const GuideNavbar = ({ username, role }) => {
     const [showLogoutModel, setShowLogoutModel] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();   // ✅ MUST be inside component
+    const location = useLocation();
 
     const handleLogoutClick = () => {
         localStorage.removeItem('token');
@@ -35,12 +35,12 @@ const GuideNavbar = ({ username, role }) => {
 
                     {/* Brand */}
                     <div
-                        className="navbar-brand"
+                        className="navbar-brand brand-clickable"
                         onClick={() => {
                             if (location.pathname === "/home") {
-                                window.location.reload(); // refresh if already home
+                                window.location.reload();
                             } else {
-                                navigate("/home");       // go to home
+                                navigate("/home");
                             }
                         }}
                     >
@@ -65,9 +65,9 @@ const GuideNavbar = ({ username, role }) => {
                                         }
                                     }}
                                 >
-                                    <option value="" disabled hidden>Place</option>
-                                    <option value="placeform">Add Place</option>
-                                    <option value="viewplace">View Places</option>
+                                    <option value="" disabled hidden>Explore</option>
+                                    <option value="placeform">Add Destination</option>
+                                    <option value="viewplace">Browse All</option>
                                 </select>
                             </li>
 
@@ -94,9 +94,9 @@ const GuideNavbar = ({ username, role }) => {
                 dialogClassName="logout-modal"
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirmation</Modal.Title>
+                    <Modal.Title>Are you sure you want to logout?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to logout?</Modal.Body>
+                
                 <Modal.Footer>
                     <Button variant="success" onClick={handleLogout}>
                         Yes, Logout

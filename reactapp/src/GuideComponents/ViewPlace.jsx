@@ -8,18 +8,24 @@ import './ViewPlace.css';
 
 const ViewPlace = () => {
   const navigate = useNavigate();
+
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedID, setselectedPlaceId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  /* 🔹 PAGINATION STATES */
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
+
   const username = localStorage.getItem('username') || 'Guest';
   const role = localStorage.getItem('role') || 'Traveller';
 
+  /* 🔹 FETCH DATA */
   useEffect(() => {
     const fetchPlaces = async () => {
-      setLoading(true);
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`${baseUrl}/api/Place`, {
@@ -27,15 +33,22 @@ const ViewPlace = () => {
         });
         setPlaces(response.data);
       } catch (err) {
-        console.error('Error fetching places:', err);
         setErrors('Failed to load places');
       } finally {
         setLoading(false);
       }
     };
     fetchPlaces();
-  }, [navigate]);
+  }, []);
 
+  /* 🔹 WIKI LINK */
+  const getWikiLink = (place) => {
+    const text = place.Name || place.Location;
+    const formatted = text.trim().replace(/\s+/g, "_");
+    return `https://en.wikipedia.org/wiki/${formatted}`;
+  };
+
+  /* 🔹 SEARCH FILTER */
   const filteredPlaces = places.filter((place) => {
     const q = searchQuery.toLowerCase();
     return (
@@ -45,18 +58,42 @@ const ViewPlace = () => {
     );
   });
 
-  const handleEdit = (myPlace) => {
-    navigate(`/editplace/${myPlace.PlaceId}`);
+  /* 🔹 PAGINATION LOGIC */
+  const totalPages = Math.ceil(filteredPlaces.length / recordsPerPage);
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+  const currentRecords = filteredPlaces.slice(indexOfFirst, indexOfLast);
+
+  /* 🔹 SMART PAGINATION (<< >> ...) */
+  const getPaginationItems = () => {
+    const items = [];
+
+    if (currentPage > 1) items.push('prev');
+
+    if (currentPage > 2) items.push('...');
+
+    items.push(currentPage);
+
+    if (currentPage + 1 <= totalPages) items.push(currentPage + 1);
+
+    if (currentPage + 1 < totalPages) items.push('...');
+
+    if (currentPage < totalPages) items.push('next');
+
+    return items;
   };
 
-  const openDeleteModal = (placeId) => {
-    setselectedPlaceId(placeId);
+  /* 🔹 ACTIONS */
+  const handleEdit = (place) => navigate(`/editplace/${place.PlaceId}`);
+
+  const openDeleteModal = (id) => {
+    setselectedPlaceId(id);
     setShowDeleteModal(true);
   };
 
   const closeDeleteModal = () => {
-    setselectedPlaceId(null);
     setShowDeleteModal(false);
+    setselectedPlaceId(null);
   };
 
   const confirmDelete = async () => {
@@ -65,9 +102,9 @@ const ViewPlace = () => {
       await axios.delete(`${baseUrl}/api/Place/${selectedID}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setPlaces(prev => prev.filter(p => p.PlaceId !== selectedID));
-    } catch (err) {
-      alert('Failed to delete');
+      setPlaces((prev) => prev.filter((p) => p.PlaceId !== selectedID));
+    } catch {
+      alert('Delete failed');
     } finally {
       closeDeleteModal();
     }
@@ -76,31 +113,77 @@ const ViewPlace = () => {
   return (
     <div className="bColor">
       <GuideNavbar username={username} role={role} />
+
       <div className="form">
         <div className="container mt-5">
           <div className="table-container">
 
-            <h2 className="text-center">Your next destination is awaiting you!!!</h2>
+            <h2 className="subtitle">Discover places worth the journey</h2>
 
-            {/* SEARCH BAR */}
-            <div className="search-box text-center mb-4">
-              <input
-                type="text"
-                placeholder="Search by name, category or location..."
-                className="form-control search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            {/* SEARCH */}
+            <div className="search-wrapper">
+  <div className="search-box-custom">
+    <span className="search-icon">🔍</span>
+    <input
+      type="text"
+      placeholder="Search destinations, category or location..."
+      value={searchQuery}
+      onChange={(e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+      }}
+    />
+  </div>
+</div>
+
+
+            {/* 🔹 PAGINATION TOP RIGHT */}
+            <div className="pagination-top-right">
+              {getPaginationItems().map((item, index) => {
+                if (item === 'prev') {
+                  return (
+                    <button
+                      key={index}
+                      className="page-btn"
+                      onClick={() => setCurrentPage((p) => p - 1)}
+                    >
+                      &laquo;
+                    </button>
+                  );
+                }
+
+                if (item === 'next') {
+                  return (
+                    <button
+                      key={index}
+                      className="page-btn"
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                    >
+                      &raquo;
+                    </button>
+                  );
+                }
+
+                if (item === '...') {
+                  return (
+                    <span key={index} className="page-dots">...</span>
+                  );
+                }
+
+                return (
+                  <button
+                    key={index}
+                    className={`page-btn ${currentPage === item ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(item)}
+                  >
+                    {item}
+                  </button>
+                );
+              })}
             </div>
 
+            {loading && <p className="text-center">Loading...</p>}
             {errors && <p className="text-danger text-center">{errors}</p>}
-
-            {loading && (
-              <div className="text-center">
-                <div className="spinner-border text-primary mb-2"></div>
-                <div className="mt-2">Loading...</div>
-              </div>
-            )}
 
             <table className="table table-bordered table-striped text-center">
               <thead>
@@ -115,77 +198,67 @@ const ViewPlace = () => {
               </thead>
 
               <tbody>
-                {filteredPlaces.length === 0 && !loading && (
+                {currentRecords.length === 0 && !loading && (
                   <tr>
-                    <td colSpan="6" className="text-muted text-center">
-                      No Places Found
-                    </td>
+                    <td colSpan="6" className="text-muted">No Places Found</td>
                   </tr>
                 )}
 
-                {filteredPlaces.map((myPlace) => (
-                  <tr key={myPlace.PlaceId}>
+                {currentRecords.map((place) => (
+                  <tr key={place.PlaceId}>
                     <td>
                       <a
-                        href="https://www.makemytrip.com/homestays/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Click to explore stays"
-                      >
+  href={getWikiLink(place)}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="image-hover-wrapper"
+>
+  <img
+    src={place.PlaceImage || 'https://via.placeholder.com/150'}
+    alt={place.Name}
+    className="place-img"
+  />
+  <div className="image-hover-overlay">
+    <span>Click to know more</span>
+  </div>
+</a>
 
-                        <img
-                          src={myPlace.PlaceImage || 'https://via.placeholder.com/150'}
-                          alt={myPlace.Name}
-                          style={{
-                            width: '150px',
-                            height: '150px',
-                            objectFit: 'cover',
-                            cursor: 'pointer',
-                            borderRadius: '8px',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                            transition: 'transform 0.3s'
-                          }}
-                          onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
-                          onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-                        />
-                      </a>
                     </td>
-
-                    <td>{myPlace.Name}</td>
-                    <td>{myPlace.Category}</td>
-                    <td>{myPlace.Location}</td>
-                    <td>{myPlace.BestTimeToVisit}</td>
+                    <td>{place.Name}</td>
+                    <td>{place.Category}</td>
+                    <td>{place.Location}</td>
+                    <td>{place.BestTimeToVisit}</td>
                     <td>
                       <div className="action-buttons">
-                        <button className="btn btn-edit" onClick={() => handleEdit(myPlace)}>Edit</button>
-                        <button className="btn btn-delete" onClick={() => openDeleteModal(myPlace.PlaceId)}>Delete</button>
+                        <button className="btn btn-edit" onClick={() => handleEdit(place)}>Edit</button>
+                        <button className="btn btn-delete" onClick={() => openDeleteModal(place.PlaceId)}>Delete</button>
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
-
             </table>
+
           </div>
-
-          {showDeleteModal && (
-            <div className="modal fade show d-block">
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title mx-auto">Are you sure?</h5>
-                  </div>
-                  <div className="modal-footer">
-                    <button className="btn btn-danger" onClick={confirmDelete}>Yes</button>
-                    <button className="btn btn-secondary" onClick={closeDeleteModal}>Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
         </div>
       </div>
+
+      {/* DELETE MODAL */}
+      {showDeleteModal && (
+        <div className="modal fade show d-block">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title mx-auto">Are you sure?</h5>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-danger" onClick={confirmDelete}>Yes</button>
+                <button className="btn btn-secondary" onClick={closeDeleteModal}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
