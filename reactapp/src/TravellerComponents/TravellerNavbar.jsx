@@ -31,12 +31,12 @@ const TravellerNavbar = ({ username, role }) => {
 
                     {/* Brand (same as GuideNavbar) */}
                     <div
-                        className="navbar-brand"
+                        className="navbar-brand brand-clickable"
                         onClick={() => {
                             if (location.pathname === "/home") {
-                                window.location.reload();   // refresh if already home
+                                window.location.reload();
                             } else {
-                                navigate("/home");          // go to home
+                                navigate("/home");
                             }
                         }}
                     >
@@ -63,8 +63,8 @@ const TravellerNavbar = ({ username, role }) => {
                                         }
                                     }}
                                 >
-                                    <option value="" disabled hidden>Place</option>
-                                    <option value="travellerviewplace">View Places</option>
+                                    <option value="" disabled hidden>Explore</option>
+                                    <option value="travellerviewplace">Browse all</option>
                                 </select>
                             </li>
 
