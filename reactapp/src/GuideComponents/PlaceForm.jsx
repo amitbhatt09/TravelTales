@@ -16,7 +16,7 @@ const PlaceForm = ({ mode }) => {
     Location: '',
     PlaceImage: null,
   });
-  const [fileName, setFileName] = useState('');
+  const [_fileName, setFileName] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);

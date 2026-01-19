@@ -148,7 +148,7 @@ const TravellerViewPlace = () => {
           <table className="table table-bordered table-striped text-center">
             <thead>
               <tr>
-                <th>Vista</th>
+                <th>In Frames</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Location</th>
