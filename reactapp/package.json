@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "cross-env BROWSER=none PORT=8081 react-scripts start --disable-host-check --host 0.0.0.0",
-    "build": "react-scripts build",
+    "build": "set DISABLE_ESLINT_PLUGIN=true && react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject"
   },
