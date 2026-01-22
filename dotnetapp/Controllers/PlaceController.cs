@@ -29,7 +29,7 @@ namespace dotnetapp.Controllers
 
         [HttpGet("{placeId}")]
         [Authorize(Roles = "Guide,Traveller")]
-        public async Task<ActionResult<IEnumerable<Place>>> GetPlaceById(int placeId){
+        public async Task<ActionResult<Place>> GetPlaceById(int placeId){
             var place=await placeService.GetPlaceById(placeId);
             if(place == null){
                 return NotFound("Cannot find any place");
@@ -42,7 +42,7 @@ namespace dotnetapp.Controllers
         public async Task<ActionResult> AddPlace([FromBody] Place place){
             try{
                 if(place == null){
-                    return StatusCode(500,"Failed to add place");
+                    return BadRequest("Place data is required");
                 }
 
                 var nameCheck=await placeService.AddPlace(place);
@@ -85,7 +85,7 @@ namespace dotnetapp.Controllers
             try{
                 var success = await placeService.DeletePlace(placeId);
 
-                if(success == null){
+                if(!success){
                     return NotFound("Cannot find any place");
                 }
                 return Ok("Place deleted successfully");

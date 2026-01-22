@@ -12,3 +12,6 @@ build/
 # System
 .DS_Store
 Thumbs.db
+
+# Test project
+dotnetapp.Tests/

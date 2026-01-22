@@ -54,7 +54,8 @@ builder.Services.AddAuthorization();
  
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<PlaceService>();
-builder.Services.AddControllers();
+
+
  
 builder.Services.AddCors(options=>{
     options.AddPolicy("AllowAllOrigins",

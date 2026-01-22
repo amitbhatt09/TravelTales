@@ -72,7 +72,7 @@ namespace dotnetapp.Services
             if(existingPlace != null){
                 _context.Places.Remove(existingPlace);
                 await _context.SaveChangesAsync();
-                return true;
+                return true; 
             }
             return false;
         }
