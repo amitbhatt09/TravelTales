@@ -54,6 +54,7 @@ builder.Services.AddAuthorization();
  
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<PlaceService>();
+builder.Services.AddHttpClient<IAIService, AIService>();
 
 
  

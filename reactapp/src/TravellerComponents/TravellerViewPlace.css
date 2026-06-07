@@ -2,6 +2,114 @@
   background-color: rgb(230, 225, 225);
 }
 
+/* ===== Modern grid cards ===== */
+.tt-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tt-card {
+  padding: 14px !important;
+}
+
+.tt-card-link {
+  text-decoration: none;
+}
+
+.tt-img-wrap {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.tt-img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  transition: transform 0.35s ease;
+}
+
+.tt-card:hover .tt-img {
+  transform: scale(1.07);
+}
+
+.tt-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  color: #fff;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.tt-card:hover .tt-overlay {
+  opacity: 1;
+}
+
+.tt-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  background: rgba(255, 215, 163, 0.94);
+}
+
+.tt-body {
+  padding-top: 12px;
+}
+
+.tt-title {
+  font-weight: 800;
+  font-size: 1.08rem;
+  color: #1a1a1a;
+}
+
+.tt-meta {
+  margin-top: 4px;
+  color: #5f5f5f;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.tt-dot {
+  opacity: 0.6;
+}
+
+.tt-actions {
+  margin-top: 12px;
+}
+
+@media (min-width: 768px) {
+  .tt-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .tt-img {
+    height: 220px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tt-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 /* ===== CONTAINER ===== */
 .table-container {
   background: linear-gradient(to bottom right, #f9f9fc, #ffffff);
@@ -21,8 +129,11 @@
 /* ===== SEARCH ===== */
 .search-wrapper {
   display: flex;
-  justify-content: center;
-  margin: 25px 0 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 16px;
 }
 
 .search-box-custom {
@@ -31,7 +142,8 @@
   background: #fff;
   border-radius: 50px;
   padding: 10px 18px;
-  width: 420px;
+  width: 100%;
+  max-width: 440px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.12);
   transition: all 0.3s ease;
 }

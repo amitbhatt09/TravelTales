@@ -3,8 +3,17 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import GuideNavbar from './GuideNavbar';
 import baseUrl from '../apiConfig';
-import 'bootstrap/dist/css/bootstrap.css';
-import './ViewPlace.css';
+import { motion } from 'framer-motion';
+import { Funnel, SlidersHorizontal } from 'lucide-react';
+import Skeleton from '../ui/Skeleton';
+import Button from '../ui/Button';
+import SectionHeader from '../ui/SectionHeader';
+import SearchBar from '../ui/SearchBar';
+import DestinationCard from '../ui/DestinationCard';
+import EmptyState from '../ui/EmptyState';
+import Modal from '../ui/Modal';
+import { buildPlaceInsights } from '../ui/utils';
+import { toast } from 'react-toastify';
 
 const ViewPlace = () => {
   const navigate = useNavigate();
@@ -15,10 +24,10 @@ const ViewPlace = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedID, setselectedPlaceId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-
-  /* 🔹 PAGINATION STATES */
-  const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 5;
+  const [category, setCategory] = useState('all');
+  const [minRating, setMinRating] = useState('all');
+  const [budgetFilter, setBudgetFilter] = useState('all');
+  const [popularity, setPopularity] = useState('all');
 
   const username = localStorage.getItem('username') || 'Guest';
   const role = localStorage.getItem('role') || 'Traveller';
@@ -34,6 +43,7 @@ const ViewPlace = () => {
         setPlaces(response.data);
       } catch (err) {
         setErrors('Failed to load places');
+        toast.error('Failed to load destinations');
       } finally {
         setLoading(false);
       }
@@ -41,49 +51,34 @@ const ViewPlace = () => {
     fetchPlaces();
   }, []);
 
-  /* 🔹 WIKI LINK */
   const getWikiLink = (place) => {
     const text = place.Name || place.Location;
     const formatted = text.trim().replace(/\s+/g, "_");
     return `https://en.wikipedia.org/wiki/${formatted}`;
   };
 
-  /* 🔹 SEARCH FILTER */
   const filteredPlaces = places.filter((place) => {
     const q = searchQuery.trim().toLowerCase();
-    return (
+    const insights = buildPlaceInsights(place);
+    const matchesQuery =
       place.Name.toLowerCase().includes(q) ||
       place.Category.toLowerCase().includes(q) ||
-      place.Location.toLowerCase().includes(q)
-    );
+      place.Location.toLowerCase().includes(q);
+
+    const matchesCategory =
+      category === 'all' ? true : (place.Category || '').toLowerCase() === category;
+
+    const matchesRating = minRating === 'all' ? true : Number(insights.rating) >= Number(minRating);
+    const matchesBudget = budgetFilter === 'all' ? true : insights.budget.toLowerCase() === budgetFilter;
+    const matchesPopularity = popularity === 'all' ? true : insights.popularity.toLowerCase() === popularity;
+
+    return matchesQuery && matchesCategory && matchesRating && matchesBudget && matchesPopularity;
   });
 
-  /* 🔹 PAGINATION LOGIC */
-  const totalPages = Math.ceil(filteredPlaces.length / recordsPerPage);
-  const indexOfLast = currentPage * recordsPerPage;
-  const indexOfFirst = indexOfLast - recordsPerPage;
-  const currentRecords = filteredPlaces.slice(indexOfFirst, indexOfLast);
+  const categories = Array.from(
+    new Set((places || []).map((p) => (p.Category || '').trim()).filter(Boolean))
+  );
 
-  /* 🔹 SMART PAGINATION (<< >> ...) */
-  const getPaginationItems = () => {
-    const items = [];
-
-    if (currentPage > 1) items.push('prev');
-
-    if (currentPage > 2) items.push('...');
-
-    items.push(currentPage);
-
-    if (currentPage + 1 <= totalPages) items.push(currentPage + 1);
-
-    if (currentPage + 1 < totalPages) items.push('...');
-
-    if (currentPage < totalPages) items.push('next');
-
-    return items;
-  };
-
-  /* 🔹 ACTIONS */
   const handleEdit = (place) => navigate(`/editplace/${place.PlaceId}`);
 
   const openDeleteModal = (id) => {
@@ -103,162 +98,112 @@ const ViewPlace = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPlaces((prev) => prev.filter((p) => p.PlaceId !== selectedID));
+      toast.success('Destination deleted');
     } catch {
-      alert('Delete failed');
+      toast.error('Delete failed');
     } finally {
       closeDeleteModal();
     }
   };
 
   return (
-    <div className="bColor">
+    <div className="min-h-screen pb-16">
       <GuideNavbar username={username} role={role} />
+      <main className="section-shell space-y-6 pt-32">
+        <SectionHeader
+          eyebrow="Guide catalog"
+          title="Manage and refine your destination portfolio"
+          description="Search by location and category, then tune advanced filters for rating, budget tier, and popularity signals."
+        />
 
-      <div className="form">
-        <div className="container mt-5">
-          <div className="table-container">
+        <SearchBar
+          sticky
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search destinations, category or location..."
+          suggestions={places.map((p) => p.Name)}
+          onSelectSuggestion={setSearchQuery}
+        />
 
-            <h2 className="subtitle">Discover places worth the journey</h2>
-
-            {/* SEARCH */}
-            <div className="search-wrapper">
-  <div className="search-box-custom">
-    <span className="search-icon">🔍</span>
-    <input
-      type="text"
-      placeholder="Search destinations, category or location..."
-      value={searchQuery}
-      onChange={(e) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1);
-      }}
-    />
-  </div>
-</div>
-
-
-            {/* 🔹 PAGINATION TOP RIGHT */}
-            <div className="pagination-top-right">
-              {getPaginationItems().map((item, index) => {
-                if (item === 'prev') {
-                  return (
-                    <button
-                      key={index}
-                      className="page-btn"
-                      onClick={() => setCurrentPage((p) => p - 1)}
-                    >
-                      &laquo;
-                    </button>
-                  );
-                }
-
-                if (item === 'next') {
-                  return (
-                    <button
-                      key={index}
-                      className="page-btn"
-                      onClick={() => setCurrentPage((p) => p + 1)}
-                    >
-                      &raquo;
-                    </button>
-                  );
-                }
-
-                if (item === '...') {
-                  return (
-                    <span key={index} className="page-dots">...</span>
-                  );
-                }
-
-                return (
-                  <button
-                    key={index}
-                    className={`page-btn ${currentPage === item ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(item)}
-                  >
-                    {item}
-                  </button>
-                );
-              })}
-            </div>
-
-            {loading && <p className="text-center">Loading...</p>}
-            {errors && <p className="text-danger text-center">{errors}</p>}
-
-            <table className="table table-bordered table-striped text-center">
-              <thead>
-                <tr>
-                  <th>In Frames</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Location</th>
-                  <th>Best time to visit</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {currentRecords.length === 0 && !loading && (
-                  <tr>
-                    <td colSpan="6" className="text-muted">No Places Found</td>
-                  </tr>
-                )}
-
-                {currentRecords.map((place) => (
-                  <tr key={place.PlaceId}>
-                    <td>
-                      <a
-  href={getWikiLink(place)}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="image-hover-wrapper"
->
-  <img
-    src={place.PlaceImage || 'https://via.placeholder.com/150'}
-    alt={place.Name}
-    className="place-img"
-  />
-  <div className="image-hover-overlay">
-    <span>Click to know more</span>
-  </div>
-</a>
-
-                    </td>
-                    <td>{place.Name}</td>
-                    <td>{place.Category}</td>
-                    <td>{place.Location}</td>
-                    <td>{place.BestTimeToVisit}</td>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="btn btn-edit" onClick={() => handleEdit(place)}>Edit</button>
-                        <button className="btn btn-delete" onClick={() => openDeleteModal(place.PlaceId)}>Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 rounded-[24px] border border-slate-200/80 bg-white/75 p-4 shadow-panel backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/55 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="col-span-full flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+            <Funnel className="h-4 w-4" /> Filters
           </div>
-        </div>
-      </div>
+          <select className="field-input" value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="all">All categories</option>
+            {categories.map((c) => (
+              <option key={c} value={c.toLowerCase()}>{c}</option>
+            ))}
+          </select>
+          <select className="field-input" value={minRating} onChange={(e) => setMinRating(e.target.value)}>
+            <option value="all">Any rating</option>
+            <option value="4.0">4.0+</option>
+            <option value="4.5">4.5+</option>
+          </select>
+          <select className="field-input" value={budgetFilter} onChange={(e) => setBudgetFilter(e.target.value)}>
+            <option value="all">Any budget</option>
+            <option value="budget">Budget</option>
+            <option value="comfort">Comfort</option>
+            <option value="premium">Premium</option>
+          </select>
+          <select className="field-input" value={popularity} onChange={(e) => setPopularity(e.target.value)}>
+            <option value="all">Any popularity</option>
+            <option value="rising">Rising</option>
+            <option value="trending">Trending</option>
+            <option value="popular">Popular</option>
+          </select>
+          <Button variant="outline" onClick={() => { setCategory('all'); setMinRating('all'); setBudgetFilter('all'); setPopularity('all'); setSearchQuery(''); }}>
+            <SlidersHorizontal className="h-4 w-4" /> Reset
+          </Button>
+        </motion.section>
 
-      {/* DELETE MODAL */}
-      {showDeleteModal && (
-        <div className="modal fade show d-block">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title mx-auto">Are you sure?</h5>
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index}>
+                <Skeleton className="h-[430px] w-full" />
               </div>
-              <div className="modal-footer">
-                <button className="btn btn-danger" onClick={confirmDelete}>Yes</button>
-                <button className="btn btn-secondary" onClick={closeDeleteModal}>Cancel</button>
-              </div>
-            </div>
+            ))}
           </div>
+        ) : null}
+
+        {errors ? <p className="text-sm text-rose-500">{errors}</p> : null}
+
+        {!loading && filteredPlaces.length === 0 ? (
+          <EmptyState
+            title="No destinations found"
+            description="Try adjusting filters or add a new destination to grow your catalog."
+            actionLabel="Add destination"
+            onAction={() => navigate('/placeform')}
+            icon="map"
+          />
+        ) : null}
+
+        {!loading ? (
+          <section className="columns-1 gap-6 space-y-6 md:columns-2 xl:columns-3">
+            {filteredPlaces.map((place, index) => (
+              <div key={place.PlaceId} className="break-inside-avoid">
+                <DestinationCard
+                  place={place}
+                  index={index}
+                  actionLabel="Edit"
+                  onAction={() => handleEdit(place)}
+                  secondaryLabel="Delete"
+                  secondaryAction={() => openDeleteModal(place.PlaceId)}
+                  onCardClick={() => window.open(getWikiLink(place), '_blank')}
+                />
+              </div>
+            ))}
+          </section>
+        ) : null}
+      </main>
+
+      <Modal open={showDeleteModal} onOpenChange={setShowDeleteModal} title="Delete destination" description="This action removes the selected destination from your catalog.">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <Button variant="outline" onClick={closeDeleteModal}>Cancel</Button>
+          <Button variant="danger" onClick={confirmDelete}>Delete</Button>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

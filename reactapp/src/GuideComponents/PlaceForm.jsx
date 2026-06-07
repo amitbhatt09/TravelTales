@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import './PlaceForm.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import GuideNavbar from './GuideNavbar';
 import baseUrl from '../apiConfig';
+import { motion } from 'framer-motion';
+import Card from '../ui/Card';
+import Button from '../ui/Button';
+import Badge from '../ui/Badge';
+import Modal from '../ui/Modal';
+import { joinLocation, splitLocation } from '../ui/utils';
 
 const PlaceForm = ({ mode }) => {
   const navigate = useNavigate();
@@ -14,9 +18,13 @@ const PlaceForm = ({ mode }) => {
     Category: '',
     BestTimeToVisit: '',
     Location: '',
-    PlaceImage: null,
+    PlaceImage: '',
+    Description: '',
   });
-  const [_fileName, setFileName] = useState('');
+  const [country, setCountry] = useState('');
+  const [stateName, setStateName] = useState('');
+  const [attractions, setAttractions] = useState('');
+  const [estimatedBudget, setEstimatedBudget] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -42,7 +50,11 @@ const PlaceForm = ({ mode }) => {
             BestTimeToVisit: placeData.BestTimeToVisit,
             Location: placeData.Location,
             PlaceImage: placeData.PlaceImage,
+            Description: placeData.Description || '',
           });
+          const parsed = splitLocation(placeData.Location || '');
+          setStateName(parsed.state);
+          setCountry(parsed.country);
         } catch (error) {
           setFormError('Error fetching place data');
         } finally {
@@ -58,31 +70,18 @@ const PlaceForm = ({ mode }) => {
     if (!formData.Name) newErrors.Name = 'Name is required';
     if (!formData.Category) newErrors.Category = 'Category is required';
     if (!formData.BestTimeToVisit) newErrors.BestTimeToVisit = 'Best Time to Visit is required';
-    if (!formData.Location) newErrors.Location = 'Location is required';
+    if (!stateName || !country) newErrors.Location = 'State and country are required';
     if (!formData.PlaceImage) newErrors.PlaceImage = 'Place image is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files && files.length > 0) {
-      const file = files[0];
-      setFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
 const handleSubmit = async (e) => {
@@ -95,6 +94,20 @@ const handleSubmit = async (e) => {
   try {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
+    const normalizedLocation = joinLocation(stateName, country);
+    const enrichedDescription = [
+      formData.Description,
+      attractions ? `Attractions: ${attractions}` : '',
+      estimatedBudget ? `Estimated Budget: ${estimatedBudget}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    const payload = {
+      ...formData,
+      Location: normalizedLocation,
+      Description: enrichedDescription,
+    };
 
     // ---------- ADD MODE VALIDATION ----------
     if (mode === 'add') {
@@ -123,9 +136,9 @@ const handleSubmit = async (e) => {
     // ---------- SAVE ----------
     if (mode === 'edit') {
       // Update without blocking any field
-      await axios.put(`${baseUrl}/api/Place/${id}`, formData, { headers });
+      await axios.put(`${baseUrl}/api/Place/${id}`, payload, { headers });
     } else {
-      await axios.post(`${baseUrl}/api/Place`, formData, { headers });
+      await axios.post(`${baseUrl}/api/Place`, payload, { headers });
     }
 
     setShowPopup(true);
@@ -151,113 +164,98 @@ const handleSubmit = async (e) => {
     navigate('/viewplace');
   };
 
+  const descriptionLength = (formData.Description || '').length;
+
   return (
-    <div className='bColor'>
-    <div className="placeform">
+    <div className="min-h-screen pb-16">
       <GuideNavbar username={username} role={role} />
-      <div className="container place-form-container">
-        <h2 className="form-title">{mode === 'edit' ? 'Edit Place' : 'Create New Place'}</h2>
-        {formError && <p className="text-danger text-center">{formError}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="Name">Name <span className="text-danger">*</span></label>
-            <input
-              type="text"
-              id="Name"
-              name="Name"
-              className="form-control"
-              value={formData.Name}
-              onChange={handleChange}
-            />
-            {errors.Name && <small className="text-danger">{errors.Name}</small>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="Category">Category <span className="text-danger">*</span></label>
-            <select
-              id="Category"
-              name="Category"
-              className="form-control"
-              value={formData.Category}
-              onChange={handleChange}
-            >
-              <option value="">Select a category</option>
-              <option value="Beach">Beach</option>
-              <option value="Mountain">Mountain</option>
-              <option value="City">City</option>
-              <option value="Historical">Historical</option>
-            </select>
-            {errors.Category && <small className="text-danger">{errors.Category}</small>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="BestTimeToVisit">Best Time to Visit <span className="text-danger">*</span></label>
-            <input
-              type="text"
-              id="BestTimeToVisit"
-              name="BestTimeToVisit"
-              className="form-control"
-              value={formData.BestTimeToVisit}
-              onChange={handleChange}
-            />
-            {errors.BestTimeToVisit && <small className="text-danger">{errors.BestTimeToVisit}</small>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="Location">Location <span className="text-danger">*</span></label>
-            <input
-              type="text"
-              id="Location"
-              name="Location"
-              className="form-control"
-              value={formData.Location}
-              onChange={handleChange}
-            />
-            {errors.Location && <small className="text-danger">{errors.Location}</small>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="PlaceImage">Place Image <span className="text-danger">*</span></label>
-            <input
-              type="file"
-              id="PlaceImage"
-              name="PlaceImage"
-              className="form-control"
-              onChange={handleChange}
-            />
-            {errors.PlaceImage && <small className="text-danger">{errors.PlaceImage}</small>}
-          </div>
-            {formData.PlaceImage && (
-            <div className="text-center mb-4">
-              <img
-                src={formData.PlaceImage}
-                alt="Place Preview"
-                style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
-              />
-            </div>
-          )}
-         <div className="form-buttons">
-    <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>Back</button>
-    <button type="submit" className="btn btn-primary" disabled={loading}>
-        {loading ? 'Loading...' : mode === 'edit' ? 'Update Place' : 'Add Place'}
-    </button>
-</div>
-        </form>
-      </div>
-      {showPopup && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
+      <main className="section-shell pt-32">
+        <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-4xl">
+          <Card className="p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h5>Success</h5>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-500">Destination studio</p>
+                <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{mode === 'edit' ? 'Edit destination' : 'Create destination'}</h1>
               </div>
-              <div className="modal-body text-center">
-                <p>{mode === 'edit' ? 'Place updated successfully!' : 'Place added successfully!'}</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-success" onClick={handlePopupClose}>Close</button>
-              </div>
+              <Badge variant="secondary">Guide role</Badge>
             </div>
-          </div>
+            {formError ? <p className="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">{formError}</p> : null}
+
+            <form onSubmit={handleSubmit} className="mt-6 grid gap-5" noValidate>
+              <div>
+                <label htmlFor="Name" className="field-label">Place name</label>
+                <input type="text" id="Name" name="Name" className="field-input" value={formData.Name} onChange={handleChange} maxLength={80} />
+                <div className="mt-2 flex items-center justify-between text-xs text-slate-500"><span>{errors.Name || ''}</span><span>{formData.Name.length}/80</span></div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="Category" className="field-label">Category</label>
+                  <select id="Category" name="Category" className="field-input" value={formData.Category} onChange={handleChange}>
+                    <option value="">Select a category</option>
+                    <option value="Beach">Beach</option>
+                    <option value="Mountain">Mountain</option>
+                    <option value="City">City</option>
+                    <option value="Historical">Historical</option>
+                  </select>
+                  {errors.Category ? <p className="mt-2 text-xs text-rose-500">{errors.Category}</p> : null}
+                </div>
+                <div>
+                  <label htmlFor="BestTimeToVisit" className="field-label">Best time to visit</label>
+                  <input type="text" id="BestTimeToVisit" name="BestTimeToVisit" className="field-input" value={formData.BestTimeToVisit} onChange={handleChange} placeholder="Nov - Mar" />
+                  {errors.BestTimeToVisit ? <p className="mt-2 text-xs text-rose-500">{errors.BestTimeToVisit}</p> : null}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="State" className="field-label">State</label>
+                  <input id="State" className="field-input" value={stateName} onChange={(e) => setStateName(e.target.value)} placeholder="Kerala" />
+                </div>
+                <div>
+                  <label htmlFor="Country" className="field-label">Country</label>
+                  <input id="Country" className="field-input" value={country} onChange={(e) => setCountry(e.target.value)} placeholder="India" />
+                </div>
+              </div>
+              {errors.Location ? <p className="-mt-2 text-xs text-rose-500">{errors.Location}</p> : null}
+
+              <div>
+                <label htmlFor="Description" className="field-label">Description</label>
+                <textarea id="Description" name="Description" className="field-textarea" value={formData.Description} onChange={handleChange} maxLength={320} placeholder="Describe the destination experience..." />
+                <div className="mt-2 flex items-center justify-between text-xs text-slate-500"><span>Beautiful, concise copy converts better.</span><span>{descriptionLength}/320</span></div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="Attractions" className="field-label">Attractions</label>
+                  <input id="Attractions" className="field-input" value={attractions} onChange={(e) => setAttractions(e.target.value)} placeholder="Beaches, cliff points" />
+                </div>
+                <div>
+                  <label htmlFor="EstimatedBudget" className="field-label">Estimated budget</label>
+                  <input id="EstimatedBudget" className="field-input" value={estimatedBudget} onChange={(e) => setEstimatedBudget(e.target.value)} placeholder="$120/day" />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="PlaceImage" className="field-label">Image URL</label>
+                <input type="url" id="PlaceImage" name="PlaceImage" className="field-input" value={formData.PlaceImage} onChange={handleChange} placeholder="https://images.unsplash.com/..." />
+                {errors.PlaceImage ? <p className="mt-2 text-xs text-rose-500">{errors.PlaceImage}</p> : null}
+              </div>
+
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button type="button" variant="outline" onClick={() => navigate(-1)}>Back</Button>
+                <Button type="submit" disabled={loading}>{loading ? 'Saving...' : mode === 'edit' ? 'Update destination' : 'Add destination'}</Button>
+              </div>
+            </form>
+          </Card>
+        </motion.div>
+      </main>
+
+      <Modal open={showPopup} onOpenChange={setShowPopup} title="Success" description={mode === 'edit' ? 'Place updated successfully.' : 'Place added successfully.'}>
+        <div className="flex justify-end">
+          <Button onClick={handlePopupClose}>Close</Button>
         </div>
-      )}
-    </div>
+      </Modal>
     </div>
   );
 };

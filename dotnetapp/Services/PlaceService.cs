@@ -61,6 +61,7 @@ namespace dotnetapp.Services
             existingPlace.BestTimeToVisit=place.BestTimeToVisit;
             existingPlace.PlaceImage=place.PlaceImage;
             existingPlace.Location=place.Location;
+            existingPlace.Description = place.Description;
 
             await _context.SaveChangesAsync();
             return true;

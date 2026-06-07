@@ -6,6 +6,17 @@
     align-items: center;
 }
 
+/* Always show nav items on desktop */
+@media (min-width: 992px) {
+  .navbar .navbar-collapse {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+  .navbar .navbar-toggler {
+    display: none;
+  }
+}
+
 /* Make navbar full width */
 .custom-navbar {
     width: 100%;
